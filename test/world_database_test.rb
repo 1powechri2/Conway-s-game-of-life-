@@ -79,36 +79,4 @@ class WorldDatabase::Minitest < Minitest::Test
     assert_equal([], result)
     db.drop('database_name')
   end
-
-# This isn't real data yet, since we are only testing that the DB can hold stuff
-# Once we get a better idea of how to work with ruby Matrices we can change how
-# this works
-  def test_it_can_have_data_inserted
-    skip
-    wdb = WorldDatabase.new
-    wdb.setup('database_name')
-    table_name = 'worlds'
-    data = {
-      'world_id' => 1,
-      'generation_id' => 1,
-      'row_one' => '101101011',
-      'row_two' => '110101011',
-      'row_three' => '010101011'
-    }
-    more_data = {
-      'world_id' => 1,
-      'generation_id' => 2,
-      'row_one' => '101101011',
-      'row_two' => '110101011',
-      'row_three' => '110101011'
-    }
-    more_data = {
-      'world_id' => 1,
-      'generation_id' => 2,
-      'row_one' => '101101011',
-      'row_two' => '110101011',
-      'row_three' => '110101011'
-    }
-    wdb.insert(table_name, data)
-  end
 end
