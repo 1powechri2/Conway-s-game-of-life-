@@ -39,6 +39,10 @@ class World
     [@id, @generation_id, @row_one, @row_two, @row_three]
   end
 
+  def self.create(data)
+    World.new(data).save
+  end
+
   def destroy
     @database.execute("DELETE from worlds
                   WHERE id = #{@id}")

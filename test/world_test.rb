@@ -13,6 +13,9 @@ class World::Minitest < Minitest::Test
     assert_nil world.row_three
   end
 
+  # @database = SQLite3::Database.new("./db/world_database.db")
+  # For now, we will hard code the DB name into the 'world' model.
+  # Once you are in mod 3 we can explore using a config file for this.
   def test_a_world_has_a_reference_to_the_database_by_default
     wdb = WorldDatabase.new
     wdb.setup('world_database')
@@ -23,12 +26,14 @@ class World::Minitest < Minitest::Test
   end
 
   def test_a_world_can_be_instantiated_with_data_from_a_hash
-    data = { generation_id: 1,
+    data = { id: 1,
+             generation_id: 1,
              row_one: '101101011',
              row_two: '110101011',
              row_three: '010101011' }
     world = World.new(data)
 
+    assert_equal data[:id], world.id
     assert_equal data[:generation_id], world.generation_id
     assert_equal data[:row_one], world.row_one
     assert_equal data[:row_two], world.row_two
@@ -45,6 +50,25 @@ class World::Minitest < Minitest::Test
              row_three: '010101011' }
     world = World.new(data)
     world.save
+
+    sqldb = SQLite3::Database.new("./db/world_database.db")
+    statement = 'SELECT * FROM worlds'
+    result = sqldb.execute(statement)
+    wdb.drop('world_database')
+
+    assert_equal [[1, 1, "101101011", "110101011", "010101011"]], result
+  end
+
+  # Note that .create is being called on the World class
+  def test_a_world_can_be_created
+    wdb = WorldDatabase.new
+    wdb.setup('world_database')
+    data = { id: 1,
+             generation_id: 1,
+             row_one: '101101011',
+             row_two: '110101011',
+             row_three: '010101011' }
+    World.create(data)
 
     sqldb = SQLite3::Database.new("./db/world_database.db")
     statement = 'SELECT * FROM worlds'
