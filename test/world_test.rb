@@ -77,4 +77,28 @@ class World::Minitest < Minitest::Test
 
     assert_equal [[1, 1, '101100011', '111110111', '010000011']], result
   end
+
+  def test_a_world_can_be_destroyed
+    wdb = WorldDatabase.new
+    wdb.setup('world_database')
+    data = { id: 1,
+             generation_id: 1,
+             row_one: '101101011',
+             row_two: '110101011',
+             row_three: '010101011' }
+    world = World.new(data)
+    world.save
+
+    sqldb = SQLite3::Database.new("./db/world_database.db")
+    statement = 'SELECT * FROM worlds'
+    result = sqldb.execute(statement)
+
+    assert_equal [[1, 1, "101101011", "110101011", "010101011"]], result
+
+    world.destroy
+    result = sqldb.execute(statement)
+    wdb.drop('world_database')
+
+    assert_equal [], result
+  end
 end

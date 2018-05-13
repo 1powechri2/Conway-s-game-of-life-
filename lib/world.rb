@@ -39,6 +39,11 @@ class World
     [@id, @generation_id, @row_one, @row_two, @row_three]
   end
 
+  def destroy
+    @database.execute("DELETE from worlds
+                  WHERE id = #{@id}")
+  end
+
   def save
     @database.execute("INSERT INTO worlds
                 VALUES (?, ?, ?, ?, ?)", attributes)
