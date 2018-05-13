@@ -13,6 +13,8 @@ class World::Minitest < Minitest::Test
     assert_nil world.row_three
   end
 
+  # This was super tricky for me, so I will give you this one.
+  # Your world should have an instance variable like the following:
   # @database = SQLite3::Database.new("./db/world_database.db")
   # For now, we will hard code the DB name into the 'world' model.
   # Once you are in mod 3 we can explore using a config file for this.
@@ -49,6 +51,15 @@ class World::Minitest < Minitest::Test
              row_two: '110101011',
              row_three: '010101011' }
     world = World.new(data)
+
+    sqldb = SQLite3::Database.new("./db/world_database.db")
+    statement = 'SELECT * FROM worlds'
+    result = sqldb.execute(statement)
+
+    # There shouldn't be anything in the database until we save
+    # the world into it.
+    assert_equal [], result
+
     world.save
 
     sqldb = SQLite3::Database.new("./db/world_database.db")
@@ -60,6 +71,7 @@ class World::Minitest < Minitest::Test
   end
 
   # Note that .create is being called on the World class
+  # This should take data like the other one,
   def test_a_world_can_be_created
     wdb = WorldDatabase.new
     wdb.setup('world_database')
@@ -78,6 +90,9 @@ class World::Minitest < Minitest::Test
     assert_equal [[1, 1, "101101011", "110101011", "010101011"]], result
   end
 
+  # This one was really tricky for me as well.  Let me know
+  # when you get here and we can pair on it.  Or you can give
+  # it a whirl on your own at first.
   def test_a_world_can_be_updated
     wdb = WorldDatabase.new
     wdb.setup('world_database')
@@ -102,6 +117,8 @@ class World::Minitest < Minitest::Test
     assert_equal [[1, 1, '101100011', '111110111', '010000011']], result
   end
 
+  # Once the test before this is complete, this one will be a bit
+  # more straightforward.
   def test_a_world_can_be_destroyed
     wdb = WorldDatabase.new
     wdb.setup('world_database')
