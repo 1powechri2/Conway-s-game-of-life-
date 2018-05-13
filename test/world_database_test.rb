@@ -79,4 +79,29 @@ class WorldDatabase::Minitest < Minitest::Test
     assert_equal([], result)
     db.drop('database_name')
   end
+
+  def test_it_can_have_data_inserted
+    skip
+    wdb = WorldDatabase.new
+    wdb.setup('database_name')
+    table_name = 'worlds'
+    data = [1, 1, '101101001', '1101000111', '101101101']
+    more_data = [1, 2, '101101101', '1100000111', '101111101']
+    and_more_data = [1, 3, '101101011', '110100011', '101101000']
+
+    wdb.insert_world(data)
+    wdb.insert_world(more_data)
+    wdb.insert_world(and_more_data)
+
+    assert File.exists?('./db/database_name.db')
+
+    sqldb = SQLite3::Database.new("./db/database_name.db")
+    statement = 'SELECT * FROM worlds'
+    result = sqldb.execute(statement)
+
+    assert_equal result, [[1, 1, "101101001", "1101000111", "101101101"],
+                          [1, 2, "101101101", "1100000111", "101111101"],
+                          [1, 3, "101101011", "110100011", "101101000"]]
+    wdb.drop('database_name')
+  end
 end
