@@ -13,6 +13,9 @@ class World::Minitest < Minitest::Test
     assert_nil world.row_three
   end
 
+  # These are just regular ruby methods
+  # We are still in ruby land, so we can extend helpers like
+  # this to clean up our tests.
   def sample_data
       { id: 1,
        generation_id: 1,
