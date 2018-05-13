@@ -56,8 +56,8 @@ class World::Minitest < Minitest::Test
     statement = 'SELECT * FROM worlds'
     result = sqldb.execute(statement)
 
-    # There shouldn't be anything in the database until we save
-    # the world into it.
+    # There shouldn't be anything in the database until we call
+    # save on the world we just created
     assert_equal [], result
 
     world.save
@@ -71,7 +71,8 @@ class World::Minitest < Minitest::Test
   end
 
   # Note that .create is being called on the World class
-  # This should take data like the other one,
+  # This should take data like the other one, but this time
+  # it will add the data directly to the database.
   def test_a_world_can_be_created
     wdb = WorldDatabase.new
     wdb.setup('world_database')
@@ -80,13 +81,16 @@ class World::Minitest < Minitest::Test
              row_one: '101101011',
              row_two: '110101011',
              row_three: '010101011' }
-    World.create(data)
+    # this method should also return the world object that is created
+    # the world object being a plain ol' ruby object
+    world = World.create(data)
 
     sqldb = SQLite3::Database.new("./db/world_database.db")
     statement = 'SELECT * FROM worlds'
     result = sqldb.execute(statement)
     wdb.drop('world_database')
 
+    assert_equal 1, world.id
     assert_equal [[1, 1, "101101011", "110101011", "010101011"]], result
   end
 

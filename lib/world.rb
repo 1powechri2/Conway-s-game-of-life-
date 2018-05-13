@@ -40,7 +40,9 @@ class World
   end
 
   def self.create(data)
-    World.new(data).save
+    world = World.new(data)
+    world.save
+    world
   end
 
   def destroy
