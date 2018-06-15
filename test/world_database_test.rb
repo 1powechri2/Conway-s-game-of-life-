@@ -24,14 +24,13 @@ class WorldDatabase::Minitest < Minitest::Test
   # being the column names and datatypes.  This should write
   # it to the database.
   def test_it_can_migrate_database_schema
-    skip
     wdb = WorldDatabase.new
     wdb.create('database_name')
     wdb.migrate
 
     assert File.exists?('./db/database_name.db')
 
-    sqldb = SQLite3::Database.new("./db/database_name.db")
+    sqldb = wdb.file
     statement = 'SELECT * FROM worlds'
     result = sqldb.execute(statement)
 
@@ -42,13 +41,12 @@ class WorldDatabase::Minitest < Minitest::Test
   # setup will roll all of the creative commands into one go
   # running db.setup should do all of the things above except drop the DB
   def test_it_can_run_the_setup_command
-    skip
     db = WorldDatabase.new
     db.setup('database_name')
 
     assert File.exists?('./db/database_name.db')
 
-    sqldb = SQLite3::Database.new("./db/database_name.db")
+    sqldb = db.file
     statement = 'SELECT * FROM worlds'
     result = sqldb.execute(statement)
 
@@ -60,7 +58,6 @@ class WorldDatabase::Minitest < Minitest::Test
   # and drop the database, recreate the database, and migrate a
   # database schema to it
   def test_it_can_run_the_reset_command
-    skip
     db = WorldDatabase.new
     db.create('database_name')
 
@@ -70,7 +67,7 @@ class WorldDatabase::Minitest < Minitest::Test
 
     assert File.exists?('./db/database_name.db')
 
-    sqldb = SQLite3::Database.new("./db/database_name.db")
+    sqldb = db.file
     statement = 'SELECT * FROM worlds'
     result = sqldb.execute(statement)
 
@@ -79,7 +76,6 @@ class WorldDatabase::Minitest < Minitest::Test
   end
 
   def test_it_can_have_data_inserted
-    skip
     wdb = WorldDatabase.new
     wdb.setup('database_name')
     table_name = 'worlds'
@@ -93,7 +89,7 @@ class WorldDatabase::Minitest < Minitest::Test
 
     assert File.exists?('./db/database_name.db')
 
-    sqldb = SQLite3::Database.new("./db/database_name.db")
+    sqldb = wdb.file
     statement = 'SELECT * FROM worlds'
     result = sqldb.execute(statement)
 
